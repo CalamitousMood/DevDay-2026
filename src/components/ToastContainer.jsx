@@ -1,8 +1,16 @@
 import React from 'react';
+import { AppContext } from '../context/AppContext';
 
 const ToastContainer = () => {
+  const { toasts } = React.useContext(AppContext);
+
   return (
-    <div>
+    <div className='fixed bottom-4 right-4 z-[100] flex flex-col gap-2'>
+      {toasts.map((toast) => (
+        <div key={toast.id} className='bg-black/80 text-whitee font-bold py-3 px-6 rounded-lg shadow-2xl'>
+          {toast.message}
+        </div>
+       ))}
     </div>
   );
 };

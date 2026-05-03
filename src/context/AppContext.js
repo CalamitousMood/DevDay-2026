@@ -38,13 +38,49 @@ export const AppProvider = ({ children }) => {
     });
   }, [currentUser]);
 
-  //toggleFavorite
+  // toggleFavorite
+  const toggleFavorite = (food) => {
+    if (!currentUser) {
+      addToast('You must be logged in to favorite items');
+      return;
+    } 
+    setFavorites((prev) => {
+      const exists = prev.some((f) => f.id === food.id || f.name === food.name);
+      let updated;
+      if(exists){
+        updated = prev.filter((f) => f.name !== food.name);
+        addToast('Removed ${food.name} from favorites');
+      } else{
+        updated = [...prev, food];
+        addToast('Added ${food.name} to favorites');
+      }
+      /*
+      const updated = exists
+        ? prev.filter((f) => f.id !== food.id && f.name !== food.name)
+        : [...prev, food];
+        */
+      saveFavoritesToFirestore(updated);
+      return updated;
+    });
+  };
 
   // Toasts
+  const [toasts, setToasts] = useState([]);
+  const addToast = (message) => {
+    const id = Date.now();
+    setToasts((prev) => [...prev, { id, message }]);
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((toast) => toast.id !== id));
+    }, 3000);
+  };
+
 
   return (
     <AppContext.Provider value={{
-      favorites
+      favorites,
+      toggleFavorite,
+      toasts,
+      addToast,
     }}>
       {children}
     </AppContext.Provider>
