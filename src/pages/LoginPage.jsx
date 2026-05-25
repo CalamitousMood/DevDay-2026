@@ -16,8 +16,11 @@ export default function LoginPage() {
 
     try {
       // Write your code here!
+      await loginUser(email, password);
+      navigate('/'); //Success
     } catch (err) {
       // And here too
+      setError('Failed to sign in. Please try again.');
     }
     
     setLoading(false);
